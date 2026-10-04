@@ -2,10 +2,14 @@
   "name": "code-grind",
   "displayName": "code-grind",
   "description": "Gamify your coding with language XP, levels, and real-time stats.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "medoyed",
   "engines": {
     "vscode": "^1.90.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MEDOYED/code-grind"
   },
   "categories": [
     "Other"
@@ -57,7 +61,7 @@
     "@types/node": "24.x",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/vscode": "^1.140.0",
+    "@types/vscode": "^1.90.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.0.0",
     "esbuild": "^0.28.1",

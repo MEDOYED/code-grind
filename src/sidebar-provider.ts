@@ -1,10 +1,76 @@
 import * as vscode from "vscode";
 
+export interface FileStat {
+  fileExtension: string;
+  count: number;
+}
+
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  private static readonly STORAGE_KEY = "codeGrindStats";
+
+  private _stats: Record<string, FileStat> = {};
+
+  constructor(private readonly _context: vscode.ExtensionContext) {
+    // load existing data from pc disk. If empty disk empty: {}
+    this._stats = this._context.globalState.get<Record<string, FileStat>>(
+      SidebarProvider.STORAGE_KEY,
+      {}
+    );
+
+    // listen text changes
+    vscode.workspace.onDidChangeTextDocument((event) => {
+      this._handleDocumentChange(event);
+    });
+  }
+
+  private _handleDocumentChange(event: vscode.TextDocumentChangeEvent) {
+    const fullPath = event.document.fileName;
+    const fullPathArr = fullPath.split("/");
+    const fileName = fullPathArr[fullPathArr.length - 1];
+    const fileNameSplitOnEachDot = fileName.split(".");
+    const fileExtensionsArr = fileNameSplitOnEachDot.slice(1);
+
+    if (fileExtensionsArr.length === 0) {
+      return;
+    }
+
+    const fileExtension = `.${fileExtensionsArr.join(".")}`;
+
+    let addedCharacters = 0;
+    for (const change of event.contentChanges) {
+      addedCharacters = addedCharacters + change.text.length;
+    }
+
+    if (addedCharacters === 0) {
+      return;
+    }
+
+    if (!this._stats[fileExtension]) {
+      this._stats[fileExtension] = {
+        fileExtension: fileExtension,
+        count: 0,
+      };
+    }
+    this._stats[fileExtension].count += addedCharacters;
+
+    // save to disk forever
+    this._context.globalState.update(SidebarProvider.STORAGE_KEY, this._stats);
+
+    // send to React for UI updating;
+    this._sendStatsToWebview();
+  }
+
+  private _sendStatsToWebview() {
+    if (this._view) {
+      this._view.webview.postMessage({
+        type: "UPDATE_STATS",
+        stats: Object.values(this._stats),
+      });
+    }
+  }
 
   // this method automaticly calls by vs code when sidebar revealing
   public resolveWebviewView(
@@ -17,23 +83,29 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     // confirm js scripts executing and give access only to dist folder;
     webviewView.webview.options = {
       enableScripts: true,
-      localResourceRoots: [vscode.Uri.joinPath(this._extensionUri, "dist")],
+      localResourceRoots: [vscode.Uri.joinPath(this._context.extensionUri, "dist")],
     };
 
     // set HTML-markup for webview
     // webviewView.webview.html = this._get
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+    webviewView.webview.onDidReceiveMessage((message) => {
+      if (message.type === "READY") {
+        this._sendStatsToWebview();
+      }
+    });
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
     // Безпечне посилання на зібраний скрипт dist/webview.js
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "dist", "webview.js")
+      vscode.Uri.joinPath(this._context.extensionUri, "dist", "webview.js")
     );
 
     // Безпечне посилання на зібрані стилі dist/webview.css (esbuild генерує їх з SCSS)
     const styleUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "dist", "webview.css")
+      vscode.Uri.joinPath(this._context.extensionUri, "dist", "webview.css")
     );
 
     // Невеликий випадковий рядок для Content Security Policy (захист від XSS)
