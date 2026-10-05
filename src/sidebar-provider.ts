@@ -27,6 +27,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private _handleDocumentChange(event: vscode.TextDocumentChangeEvent) {
+    if (event.document.uri.scheme !== "file") {
+      return;
+    }
+
+    if (event.document.fileName.includes("/.git/")) {
+      return;
+    }
+
     const fullPath = event.document.fileName;
     const fullPathArr = fullPath.split("/");
     const fileName = fullPathArr[fullPathArr.length - 1];
