@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 
+import type { FileStat } from "@core/types";
+
 declare function acquireVsCodeApi(): {
   postMessage: (message: any) => void;
 };
 
 const vscode = typeof acquireVsCodeApi === "function" ? acquireVsCodeApi() : null;
-
-interface FileStat {
-  fileExtension: string;
-  count: number;
-}
 
 export const App = () => {
   const [stats, setStats] = useState<FileStat[]>([]);

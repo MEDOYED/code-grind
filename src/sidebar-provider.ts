@@ -1,9 +1,6 @@
 import * as vscode from "vscode";
 
-export interface FileStat {
-  fileExtension: string;
-  count: number;
-}
+import type { FileStat } from "@core/types";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
