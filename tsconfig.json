@@ -6,7 +6,12 @@
     "types": ["node", "mocha"],
     "sourceMap": true,
     "rootDir": "src",
-    "strict": true
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["./src/core/*"]
+    }
   },
+
   "exclude": ["src/webview", "node_modules"]
 }
