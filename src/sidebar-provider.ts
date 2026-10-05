@@ -11,18 +11,16 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   private static readonly STORAGE_KEY = "codeGrindStats";
 
-  private _stats: Record<string, FileStat> = {};
-
   constructor(private readonly _context: vscode.ExtensionContext) {
-    // load existing data from pc disk. If empty disk empty: {}
-    this._stats = this._context.globalState.get<Record<string, FileStat>>(
-      SidebarProvider.STORAGE_KEY,
-      {}
-    );
-
     // listen text changes
     vscode.workspace.onDidChangeTextDocument((event) => {
       this._handleDocumentChange(event);
+    });
+
+    vscode.window.onDidChangeWindowState((windowState) => {
+      if (windowState.focused) {
+        this._sendStatsToWebview();
+      }
     });
   }
 
@@ -56,16 +54,21 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       return;
     }
 
-    if (!this._stats[fileExtension]) {
-      this._stats[fileExtension] = {
+    const stats = this._context.globalState.get<Record<string, FileStat>>(
+      SidebarProvider.STORAGE_KEY,
+      {}
+    );
+
+    if (!stats[fileExtension]) {
+      stats[fileExtension] = {
         fileExtension: fileExtension,
         count: 0,
       };
     }
-    this._stats[fileExtension].count += addedCharacters;
+    stats[fileExtension].count += addedCharacters;
 
     // save to disk forever
-    this._context.globalState.update(SidebarProvider.STORAGE_KEY, this._stats);
+    this._context.globalState.update(SidebarProvider.STORAGE_KEY, stats);
 
     // send to React for UI updating;
     this._sendStatsToWebview();
@@ -73,9 +76,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   private _sendStatsToWebview() {
     if (this._view) {
+      const stats = this._context.globalState.get<Record<string, FileStat>>(
+        SidebarProvider.STORAGE_KEY,
+        {}
+      );
+
       this._view.webview.postMessage({
         type: "UPDATE_STATS",
-        stats: Object.values(this._stats),
+        stats: Object.values(stats),
       });
     }
   }
