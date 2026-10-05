@@ -7,7 +7,6 @@
     "sourceMap": true,
     "rootDir": "src",
     "strict": true,
-    "baseUrl": ".",
     "paths": {
       "@core/*": ["./src/core/*"]
     }
