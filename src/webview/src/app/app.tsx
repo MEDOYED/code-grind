@@ -39,7 +39,7 @@ export const App = () => {
         <div>
           {stats.map((statItem) => (
             <div>
-              <span>{statItem.fileExtension}</span>
+              <span>{statItem.fileExtension} </span>
               <span>{statItem.count} symbols</span>
             </div>
           ))}

@@ -42,12 +42,23 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     const fileExtension = `.${fileExtensionsArr.join(".")}`;
 
-    let addedCharacters = 0;
-    for (const change of event.contentChanges) {
-      addedCharacters = addedCharacters + change.text.length;
+    const firstChange = event.contentChanges[0];
+    if (!firstChange) {
+      return;
     }
 
-    if (addedCharacters === 0) {
+    // ignore Backspace, Delete, Cut
+    if (firstChange.text === "") {
+      return;
+    }
+
+    // ignore Ctrl + Z, Ctrl + Y
+    if (event.reason) {
+      return;
+    }
+
+    const isEnter = firstChange.text.startsWith("\n") || firstChange.text.startsWith("\r\n");
+    if (firstChange.text.length > 2 && !isEnter) {
       return;
     }
 
@@ -62,7 +73,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         count: 0,
       };
     }
-    stats[fileExtension].count += addedCharacters;
+
+    stats[fileExtension].count += 1;
 
     // save to disk forever
     this._context.globalState.update(SidebarProvider.STORAGE_KEY, stats);
