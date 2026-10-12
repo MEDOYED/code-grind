@@ -1,0 +1,66 @@
+.container {
+  padding: 12px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.empty {
+  opacity: 0.6;
+  font-size: 13px;
+}
+
+.statList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.statCard {
+  background: var(--vscode-editor-inactiveSelectionBackground);
+  border-radius: 6px;
+  padding: 10px 12px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  &__extension {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  &__level {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--vscode-charts-yellow);
+  }
+
+  &__barTrack {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--vscode-scrollbarSlider-background);
+    overflow: hidden;
+  }
+
+  &__barFill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--vscode-charts-blue);
+    transition: width 0.3s ease;
+  }
+
+  &__footer {
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: 0.7;
+    display: flex;
+    justify-content: space-between;
+  }
+}
