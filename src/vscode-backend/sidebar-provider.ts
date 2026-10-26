@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-import type { FileStat } from "@core/types";
+import type { FileStat, DailyStats } from "@core/types";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
@@ -87,8 +87,32 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       stats,
     );
 
+    this._trackDailyCharacter();
+
     // send to React for UI updating;
     this._sendStatsToWebview();
+  }
+
+  private static readonly DAILY_STORAGE_KEY = "codeGrindDailyStats";
+
+  private _trackDailyCharacter() {
+    const today = getLocalDate();
+
+    const dailyStats = this._context.globalState.get<DailyStats>(
+      SidebarProvider.DAILY_STORAGE_KEY,
+      {},
+    );
+
+    if (!dailyStats[today]) {
+      dailyStats[today] = 0;
+    }
+
+    dailyStats[today] = dailyStats[today] + 1;
+
+    this._context.globalState.update(
+      SidebarProvider.DAILY_STORAGE_KEY,
+      dailyStats,
+    );
   }
 
   private _sendStatsToWebview() {
@@ -96,10 +120,15 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       const stats = this._context.globalState.get<
         Record<string, FileStat>
       >(SidebarProvider.STORAGE_KEY, {});
+      const dailyStats = this._context.globalState.get<DailyStats>(
+        SidebarProvider.DAILY_STORAGE_KEY,
+        {},
+      );
 
       this._view.webview.postMessage({
         type: "UPDATE_STATS",
         stats: Object.values(stats),
+        dailyStats,
       });
     }
   }
@@ -166,7 +195,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <title>CodeGrind XP</title>
       </head>
       <body>
-        <!-- Сюди твій React монтуватиме додаток -->
         <div id="root"></div>
         <script nonce="${nonce}" src="${scriptUri}"></script>
       </body>
@@ -185,4 +213,11 @@ function getNonce() {
     );
   }
   return text;
+}
+
+function getLocalDate(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }

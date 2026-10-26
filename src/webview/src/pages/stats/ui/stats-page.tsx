@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import type { FileStat } from "@core/types";
+import type { FileStat, DailyStats } from "@core/types";
 
 import { getLevelFromCount } from "../lib/get-level-from-count";
 
@@ -15,6 +15,9 @@ const vscode =
 
 export const StatsPage = () => {
   const [stats, setStats] = useState<FileStat[]>([]);
+  const [dailyStats, setDailyStats] = useState<DailyStats | null>(
+    null,
+  );
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -22,6 +25,7 @@ export const StatsPage = () => {
 
       if (message.type === "UPDATE_STATS") {
         setStats(message.stats);
+        setDailyStats(message.dailyStats);
       }
     };
 
@@ -37,6 +41,8 @@ export const StatsPage = () => {
   return (
     <div className={s.container}>
       <h1 className={s.title}>Code Grind Stats</h1>
+
+      {dailyStats && <div>{dailyStats["2026-10-26"]}</div>}
 
       {stats.length === 0 ? (
         <p className={s.empty}>Start typing in some file...</p>

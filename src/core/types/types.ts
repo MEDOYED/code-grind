@@ -10,3 +10,5 @@ export interface FileStat {
 //   streakDays: number;
 //   lastActiveDate: string;
 // }
+
+export type DailyStats = Record<string, number>;

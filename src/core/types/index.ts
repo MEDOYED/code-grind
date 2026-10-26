@@ -1,1 +1,1 @@
-export { FileStat } from "./types";
+export { FileStat, DailyStats } from "./types";
