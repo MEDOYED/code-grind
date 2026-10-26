@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import type { FileStat } from "@core/types";
 
-import { getLevelFromCount } from "./lib/get-level-from-count";
+import { getLevelFromCount } from "../lib/get-level-from-count";
 
 import * as s from "./stats-page.module.scss";
 

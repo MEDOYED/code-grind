@@ -1,1 +1,1 @@
-export { StatsPage } from "./stats-page";
+export { StatsPage } from "./ui/stats-page";
