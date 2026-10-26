@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 
-import type { FileStat, DailyStats } from "@core/types";
+import type {
+  FileStat,
+  DailyStats,
+  ExtensionToWebviewMessage,
+  WebviewToExtensionMessage,
+} from "@core/types";
 
 import { getLevelFromCount } from "../lib/get-level-from-count";
 
 import * as s from "./stats-page.module.scss";
 
 declare function acquireVsCodeApi(): {
-  postMessage: (message: any) => void;
+  postMessage: (message: WebviewToExtensionMessage) => void;
 };
 
 const vscode =
@@ -21,7 +26,7 @@ export const StatsPage = () => {
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      const message = event.data;
+      const message: ExtensionToWebviewMessage = event.data;
 
       if (message.type === "UPDATE_STATS") {
         setStats(message.stats);

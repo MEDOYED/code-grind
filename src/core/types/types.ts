@@ -12,3 +12,13 @@ export interface FileStat {
 // }
 
 export type DailyStats = Record<string, number>;
+
+export type ExtensionToWebviewMessage = {
+  type: "UPDATE_STATS";
+  stats: FileStat[];
+  dailyStats: DailyStats;
+};
+
+export type WebviewToExtensionMessage = {
+  type: "READY";
+};

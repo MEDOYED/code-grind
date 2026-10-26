@@ -1,1 +1,6 @@
-export { FileStat, DailyStats } from "./types";
+export {
+  FileStat,
+  DailyStats,
+  ExtensionToWebviewMessage,
+  WebviewToExtensionMessage,
+} from "./types";

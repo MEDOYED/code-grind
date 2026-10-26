@@ -1,6 +1,11 @@
 import * as vscode from "vscode";
 
-import type { FileStat, DailyStats } from "@core/types";
+import type {
+  FileStat,
+  DailyStats,
+  ExtensionToWebviewMessage,
+  WebviewToExtensionMessage,
+} from "@core/types";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
@@ -125,11 +130,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         {},
       );
 
-      this._view.webview.postMessage({
+      const message: ExtensionToWebviewMessage = {
         type: "UPDATE_STATS",
         stats: Object.values(stats),
         dailyStats,
-      });
+      };
+
+      this._view.webview.postMessage(message);
     }
   }
 
@@ -155,11 +162,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       webviewView.webview,
     );
 
-    webviewView.webview.onDidReceiveMessage(message => {
-      if (message.type === "READY") {
-        this._sendStatsToWebview();
-      }
-    });
+    webviewView.webview.onDidReceiveMessage(
+      (message: WebviewToExtensionMessage) => {
+        if (message.type === "READY") {
+          this._sendStatsToWebview();
+        }
+      },
+    );
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
