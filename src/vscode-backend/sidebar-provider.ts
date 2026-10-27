@@ -1,6 +1,12 @@
 import * as vscode from "vscode";
 
-import type { FileStat } from "@core/types";
+import type {
+  FileStat,
+  DailyStats,
+  ExtensionToWebviewMessage,
+  WebviewToExtensionMessage,
+} from "@core/types";
+import { getLocalDate } from "@core/lib/date";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
@@ -87,8 +93,32 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       stats,
     );
 
+    this._trackDailyCharacter();
+
     // send to React for UI updating;
     this._sendStatsToWebview();
+  }
+
+  private static readonly DAILY_STORAGE_KEY = "codeGrindDailyStats";
+
+  private _trackDailyCharacter() {
+    const today = getLocalDate();
+
+    const dailyStats = this._context.globalState.get<DailyStats>(
+      SidebarProvider.DAILY_STORAGE_KEY,
+      {},
+    );
+
+    if (!dailyStats[today]) {
+      dailyStats[today] = 0;
+    }
+
+    dailyStats[today] = dailyStats[today] + 1;
+
+    this._context.globalState.update(
+      SidebarProvider.DAILY_STORAGE_KEY,
+      dailyStats,
+    );
   }
 
   private _sendStatsToWebview() {
@@ -96,11 +126,18 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       const stats = this._context.globalState.get<
         Record<string, FileStat>
       >(SidebarProvider.STORAGE_KEY, {});
+      const dailyStats = this._context.globalState.get<DailyStats>(
+        SidebarProvider.DAILY_STORAGE_KEY,
+        {},
+      );
 
-      this._view.webview.postMessage({
+      const message: ExtensionToWebviewMessage = {
         type: "UPDATE_STATS",
         stats: Object.values(stats),
-      });
+        dailyStats,
+      };
+
+      this._view.webview.postMessage(message);
     }
   }
 
@@ -126,11 +163,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       webviewView.webview,
     );
 
-    webviewView.webview.onDidReceiveMessage(message => {
-      if (message.type === "READY") {
-        this._sendStatsToWebview();
-      }
-    });
+    webviewView.webview.onDidReceiveMessage(
+      (message: WebviewToExtensionMessage) => {
+        if (message.type === "READY") {
+          this._sendStatsToWebview();
+        }
+      },
+    );
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
@@ -156,7 +195,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const nonce = getNonce();
 
     return `<!DOCTYPE html>
-      <html lang="en">
+      <html lang="en" data-theme="dark">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -166,7 +205,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <title>CodeGrind XP</title>
       </head>
       <body>
-        <!-- Сюди твій React монтуватиме додаток -->
         <div id="root"></div>
         <script nonce="${nonce}" src="${scriptUri}"></script>
       </body>

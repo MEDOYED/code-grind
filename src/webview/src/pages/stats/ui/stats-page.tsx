@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 
-import type { FileStat } from "@core/types";
+import type {
+  FileStat,
+  DailyStats,
+  ExtensionToWebviewMessage,
+  WebviewToExtensionMessage,
+} from "@core/types";
 
-import { getLevelFromCount } from "./lib/get-level-from-count";
+import { ActivityHeatmap } from "./activity-heatmap/activity-heatmap";
+import { getLevelFromCount } from "../lib/get-level-from-count";
 
 import * as s from "./stats-page.module.scss";
 
 declare function acquireVsCodeApi(): {
-  postMessage: (message: any) => void;
+  postMessage: (message: WebviewToExtensionMessage) => void;
 };
 
 const vscode =
@@ -15,13 +21,17 @@ const vscode =
 
 export const StatsPage = () => {
   const [stats, setStats] = useState<FileStat[]>([]);
+  const [dailyStats, setDailyStats] = useState<DailyStats | null>(
+    null,
+  );
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      const message = event.data;
+      const message: ExtensionToWebviewMessage = event.data;
 
       if (message.type === "UPDATE_STATS") {
         setStats(message.stats);
+        setDailyStats(message.dailyStats);
       }
     };
 
@@ -37,6 +47,8 @@ export const StatsPage = () => {
   return (
     <div className={s.container}>
       <h1 className={s.title}>Code Grind Stats</h1>
+
+      {dailyStats && <ActivityHeatmap dailyStats={dailyStats} />}
 
       {stats.length === 0 ? (
         <p className={s.empty}>Start typing in some file...</p>
