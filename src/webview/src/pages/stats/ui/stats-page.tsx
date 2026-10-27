@@ -7,6 +7,7 @@ import type {
   WebviewToExtensionMessage,
 } from "@core/types";
 
+import { ActivityHeatmap } from "./activity-heatmap/activity-heatmap";
 import { getLevelFromCount } from "../lib/get-level-from-count";
 
 import * as s from "./stats-page.module.scss";
@@ -47,7 +48,7 @@ export const StatsPage = () => {
     <div className={s.container}>
       <h1 className={s.title}>Code Grind Stats</h1>
 
-      {dailyStats && <div>{dailyStats["2026-10-26"]}</div>}
+      {dailyStats && <ActivityHeatmap dailyStats={dailyStats} />}
 
       {stats.length === 0 ? (
         <p className={s.empty}>Start typing in some file...</p>
