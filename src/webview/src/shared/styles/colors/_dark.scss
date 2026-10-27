@@ -1,0 +1,146 @@
+[data-theme="dark"] {
+  // Deprecated variables. Do not use!!!
+  --background: rgb(14 20 21); // --md-sys-color-background
+  --text-color: rgb(222 227 229); // --md-sys-color-on-background
+  // --background: #181818;
+  // --text-color: #ffffff;
+
+  /* ========== АКЦЕНТНІ КОЛЬОРИ ========== */
+
+  /* Основний брендовий колір: FAB, активні кнопки, активні вкладки, акцентні елементи */
+  --md-sys-color-primary: rgb(130 211 224);
+
+  /* Колір поверхні з primary (наприклад, фон tinted кнопок) */
+  --md-sys-color-surface-tint: rgb(130 211 224);
+
+  /* Текст/іконки на primary фоні */
+  --md-sys-color-on-primary: rgb(0 54 61);
+
+  /* Контейнер з primary (фон звичайних кнопок, чіпів, карток) */
+  --md-sys-color-primary-container: rgb(0 79 88);
+
+  /* Текст/іконки на primary-container */
+  --md-sys-color-on-primary-container: rgb(158 239 253);
+
+  /* Другорядний акцент (менш помітні елементи, фільтри, чіпи) */
+  --md-sys-color-secondary: rgb(177 203 208);
+
+  /* Текст/іконки на secondary фоні */
+  --md-sys-color-on-secondary: rgb(28 52 56);
+
+  /* Контейнер з secondary */
+  --md-sys-color-secondary-container: rgb(51 75 79);
+
+  /* Текст/іконки на secondary-container */
+  --md-sys-color-on-secondary-container: rgb(205 231 236);
+
+  /* Третій акцент (для різноманітності, часто в парі з primary) */
+  --md-sys-color-tertiary: rgb(186 198 234);
+
+  /* Текст/іконки на tertiary фоні */
+  --md-sys-color-on-tertiary: rgb(36 48 77);
+
+  /* Контейнер з tertiary */
+  --md-sys-color-tertiary-container: rgb(59 70 100);
+
+  /* Текст/іконки на tertiary-container */
+  --md-sys-color-on-tertiary-container: rgb(218 226 255);
+
+  /* ========== ПОМИЛКИ ========== */
+
+  /* Колір помилки (іконки, акценти помилок) */
+  --md-sys-color-error: rgb(255 180 171);
+
+  /* Текст/іконки на error фоні */
+  --md-sys-color-on-error: rgb(105 0 5);
+
+  /* Контейнер помилки (фон повідомлень про помилку) */
+  --md-sys-color-error-container: rgb(147 0 10);
+
+  /* Текст/іконки на error-container */
+  --md-sys-color-on-error-container: rgb(255 218 214);
+
+  /* ========== НЕЙТРАЛЬНІ ПОВЕРХНІ ========== */
+
+  /* Основний фон всього додатка */
+  --md-sys-color-background: rgb(14 20 21);
+
+  /* Текст/іконки на background */
+  --md-sys-color-on-background: rgb(222 227 229);
+
+  /* Базова поверхня (часто те саме, що background) */
+  --md-sys-color-surface: rgb(14 20 21);
+
+  /* Текст/іконки на surface (основний текст додатка) */
+  --md-sys-color-on-surface: rgb(222 227 229);
+
+  /* Варіант поверхні (sidebar, bottom sheet, альтернативні картки) */
+  --md-sys-color-surface-variant: rgb(63 72 74);
+
+  /* Текст/іконки на surface-variant */
+  --md-sys-color-on-surface-variant: rgb(191 200 202);
+
+  /* Основний бордер (поля вводу, розділювачі) */
+  --md-sys-color-outline: rgb(137 146 148);
+
+  /* Менш контрастний бордер (наприклад, нижній бордер TextField) */
+  --md-sys-color-outline-variant: rgb(63 72 74);
+
+  /* Тіні (зазвичай чорний) */
+  --md-sys-color-shadow: rgb(0 0 0);
+  --md-sys-color-shadow-black: rgb(0 0 0);
+
+  /* Затемнення (scrim для модальних вікон) */
+  --md-sys-color-scrim: rgb(0 0 0);
+
+  /* ========== ІНВЕРСНІ КОЛЬОРИ (світлі елементи в темній темі) ========== */
+
+  /* Інверсна поверхня (наприклад, фон snackbar) */
+  --md-sys-color-inverse-surface: rgb(222 227 229);
+
+  /* Текст/іконки на inverse-surface */
+  --md-sys-color-inverse-on-surface: rgb(43 49 51);
+
+  /* Інверсний primary (для компонентів на світлому фоні) */
+  --md-sys-color-inverse-primary: rgb(0 104 116);
+
+  /* ========== ФІКСОВАНІ ВАРІАНТИ (не змінюються при перемиканні теми) ========== */
+
+  --md-sys-color-primary-fixed: rgb(158 239 253);
+  --md-sys-color-on-primary-fixed: rgb(0 31 36);
+  --md-sys-color-primary-fixed-dim: rgb(130 211 224);
+  --md-sys-color-on-primary-fixed-variant: rgb(0 79 88);
+
+  --md-sys-color-secondary-fixed: rgb(205 231 236);
+  --md-sys-color-on-secondary-fixed: rgb(5 31 35);
+  --md-sys-color-secondary-fixed-dim: rgb(177 203 208);
+  --md-sys-color-on-secondary-fixed-variant: rgb(51 75 79);
+
+  --md-sys-color-tertiary-fixed: rgb(218 226 255);
+  --md-sys-color-on-tertiary-fixed: rgb(14 27 55);
+  --md-sys-color-tertiary-fixed-dim: rgb(186 198 234);
+  --md-sys-color-on-tertiary-fixed-variant: rgb(59 70 100);
+
+  /* ========== ГРАДАЦІЇ ПОВЕРХОНЬ (для імітації висоти) ========== */
+
+  /* Найтемніша поверхня */
+  --md-sys-color-surface-dim: rgb(14 20 21);
+
+  /* Найсвітліша поверхня в темній темі */
+  --md-sys-color-surface-bright: rgb(52 58 59);
+
+  /* Найнижчий рівень висоти (white in light theme) */
+  --md-sys-color-surface-container-lowest: rgb(9 15 16);
+
+  /* Низький рівень */
+  --md-sys-color-surface-container-low: rgb(23 29 30);
+
+  /* Середній рівень (зазвичай фон карток/діалогів) */
+  --md-sys-color-surface-container: rgb(27 33 34);
+
+  /* Високий рівень */
+  --md-sys-color-surface-container-high: rgb(37 43 44);
+
+  /* Найвищий рівень (наприклад, виділені елементи) */
+  --md-sys-color-surface-container-highest: rgb(48 54 55);
+}

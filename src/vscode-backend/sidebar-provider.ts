@@ -6,6 +6,7 @@ import type {
   ExtensionToWebviewMessage,
   WebviewToExtensionMessage,
 } from "@core/types";
+import { getLocalDate } from "@core/lib/date";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
@@ -194,7 +195,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const nonce = getNonce();
 
     return `<!DOCTYPE html>
-      <html lang="en">
+      <html lang="en" data-theme="dark">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -222,11 +223,4 @@ function getNonce() {
     );
   }
   return text;
-}
-
-function getLocalDate(date: Date = new Date()): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
 }
