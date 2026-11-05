@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 import type {
   FileStat,
@@ -38,17 +39,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       return;
     }
 
-    const fullPath = event.document.fileName;
-    const fullPathArr = fullPath.split("/");
-    const fileName = fullPathArr[fullPathArr.length - 1];
-    const fileNameSplitOnEachDot = fileName.split(".");
-    const fileExtensionsArr = fileNameSplitOnEachDot.slice(1);
+    const fileExtension = path.extname(event.document.fileName);
 
-    if (fileExtensionsArr.length === 0) {
+    if (!fileExtension) {
       return;
     }
-
-    const fileExtension = `.${fileExtensionsArr.join(".")}`;
 
     const firstChange = event.contentChanges[0];
     if (!firstChange) {
