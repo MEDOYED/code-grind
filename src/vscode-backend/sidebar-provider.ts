@@ -9,11 +9,14 @@ import type {
 } from "@core/types";
 import { getLocalDate } from "@core/lib/date";
 
+import {
+  STATS_STORAGE_KEY,
+  DAILY_STATS_STORAGE_KEY,
+} from "./constants/storage-keys";
+
 export class SidebarProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "codegrind.sidebarView";
   private _view?: vscode.WebviewView;
-
-  private static readonly STORAGE_KEY = "codeGrindStats";
 
   constructor(private readonly _context: vscode.ExtensionContext) {
     // listen text changes
@@ -69,7 +72,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     const stats = this._context.globalState.get<
       Record<string, FileStat>
-    >(SidebarProvider.STORAGE_KEY, {});
+    >(STATS_STORAGE_KEY, {});
 
     if (!stats[fileExtension]) {
       stats[fileExtension] = {
@@ -83,10 +86,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     stats[fileExtension].xp += 1;
 
     // save to disk forever
-    this._context.globalState.update(
-      SidebarProvider.STORAGE_KEY,
-      stats,
-    );
+    this._context.globalState.update(STATS_STORAGE_KEY, stats);
 
     this._trackDailyCharacter();
 
@@ -94,13 +94,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     this._sendStatsToWebview();
   }
 
-  private static readonly DAILY_STORAGE_KEY = "codeGrindDailyStats";
-
   private _trackDailyCharacter() {
     const today = getLocalDate();
 
     const dailyStats = this._context.globalState.get<DailyStats>(
-      SidebarProvider.DAILY_STORAGE_KEY,
+      DAILY_STATS_STORAGE_KEY,
       {},
     );
 
@@ -111,7 +109,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     dailyStats[today] = dailyStats[today] + 1;
 
     this._context.globalState.update(
-      SidebarProvider.DAILY_STORAGE_KEY,
+      DAILY_STATS_STORAGE_KEY,
       dailyStats,
     );
   }
@@ -120,9 +118,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     if (this._view) {
       const stats = this._context.globalState.get<
         Record<string, FileStat>
-      >(SidebarProvider.STORAGE_KEY, {});
+      >(STATS_STORAGE_KEY, {});
       const dailyStats = this._context.globalState.get<DailyStats>(
-        SidebarProvider.DAILY_STORAGE_KEY,
+        DAILY_STATS_STORAGE_KEY,
         {},
       );
 
